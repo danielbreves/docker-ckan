@@ -75,9 +75,9 @@ RUN apk add --no-cache \
         libxslt
 
 # install qsv
-RUN wget https://github.com/jqnatividad/qsv/releases/download/0.87.1/qsv-0.87.1-x86_64-unknown-linux-gnu.zip -P /tmp
-RUN unzip /tmp/qsv-0.87.1-x86_64-unknown-linux-gnu.zip -d /tmp
-RUN rm /tmp/qsv-0.87.1-x86_64-unknown-linux-gnu.zip
+RUN wget https://github.com/jqnatividad/qsv/releases/download/0.87.1/qsv-0.87.1-x86_64-unknown-linux-musl.zip -P /tmp
+RUN unzip /tmp/qsv-0.87.1-x86_64-unknown-linux-musl.zip -d /tmp
+RUN rm /tmp/qsv-0.87.1-x86_64-unknown-linux-musl.zip
 RUN mv /tmp/qsv* /bin
 
 # if qsv is already installed, be sure to update it to the latest release
