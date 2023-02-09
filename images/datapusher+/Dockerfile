@@ -35,11 +35,10 @@ RUN apk add --no-cache \
         libxslt-dev \
         rust \
         cargo \
-        python3-virtualenv \
-        build-essential \
-        libxslt1-dev \
-        zlib1g-dev \ 
-        libpq-dev
+        build-base \
+        libxslt-dev \
+        zlib-dev \ 
+        libpq
 
 
 # Create the src directory
@@ -82,7 +81,7 @@ RUN rm /tmp/qsv-0.87.1-x86_64-unknown-linux-gnu.zip
 RUN mv /tmp/qsv* /usr/local/bin
 
 # if qsv is already installed, be sure to update it to the latest release
-RUN qsvdp --update
+# RUN qsvdp --update
 
 # Install pip
 RUN curl -o /tmp/get-pip.py https://bootstrap.pypa.io/get-pip.py && \
@@ -99,8 +98,8 @@ RUN addgroup -g 92 -S ckan && \
     adduser -u 92 -h /srv/app -H -D -S -G ckan ckan
 
 # Install datapusher
-RUN pip install --no-index --find-links=/srv/app/wheels datapusher && \
-    pip install --no-index --find-links=/srv/app/wheels -r /srv/app/wheels/requirements.txt && \
+RUN pip install --no-index --find-links=/srv/app/wheels datapusher-plus && \
+    # pip install --no-index --find-links=/srv/app/wheels -r /srv/app/wheels/requirements.txt && \
     # Set timezone
     echo "UTC" >  /etc/timezone && \
     # Change ownership to app user
