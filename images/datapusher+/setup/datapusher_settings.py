@@ -32,21 +32,11 @@ PASSWORD = str(uuid.uuid4())
 NAME = 'datapusher-plus'
 
 # The connect string of the Datapusher+ Job database
-## ASK TOME
+
 SQLALCHEMY_DATABASE_URI = 'sqlite:////tmp/job_store.db'
 
 # webserver host and port
-DB_HOST = os.environ.get('DBHost')
-DATASTORE_DBNAME = os.environ.get('DatastoreDBName')
-DATASTORE_RW_DBUSER = os.environ.get('DatastoreRWDBUser')
-DATASTORE_RW_DBPASS = os.environ.get('DatastoreRWDBPass')
-# ASK BLAZ
-# 
-# CHART_WRITE_ENGINE_URL is created using the helm chart variables
-if DB_HOST != None and DATASTORE_DBNAME != None and DATASTORE_RW_DBUSER != None and DATASTORE_RW_DBPASS != None :
-    CHART_WRITE_ENGINE_URL = 'postgresql://{DATASTORE_RW_DBUSER}:{DATASTORE_RW_DBPASS}@{DB_HOST}/{DATASTORE_DBNAME}'
-
-WRITE_ENGINE_URL = os.environ.get('DATAPUSHER_WRITE_ENGINE_URL') or CHART_WRITE_ENGINE_URL or 'postgresql://datastorerw:pass@postgres/datastore_default'
+WRITE_ENGINE_URL = os.environ.get('DATAPUSHER_WRITE_ENGINE_URL', 'postgresql://datastorerw:pass@postgres/datastore_default')
 HOST = '0.0.0.0'
 PORT = 8000
 
