@@ -52,7 +52,7 @@ RUN curl -o ${SRC_DIR}/get-pip.py https://bootstrap.pypa.io/get-pip.py && \
 RUN pip wheel --wheel-dir=/wheels git+${GIT_URL}@${GIT_BRANCH}#egg=datapusher-plus
 
 # Get uwsgi and gevent from pip
-RUN pip wheel --wheel-dir=/wheels uwsgi==2.0.19.1 gevent==21.12.0 greenlet==1.1.3
+RUN pip wheel --wheel-dir=/wheels uwsgi==2.0.21 gevent==22.10.2 greenlet==2.0.2
 
 
 ############
@@ -75,13 +75,13 @@ RUN apk add --no-cache \
         libxslt
 
 # instal qsv
-RUN wget https://github.com/jqnatividad/qsv/releases/download/0.87.1/qsv-0.87.1-x86_64-unknown-linux-gnu.zip -P /tmp
-RUN unzip /tmp/qsv-0.87.1-x86_64-unknown-linux-gnu.zip -d /tmp
-RUN rm /tmp/qsv-0.87.1-x86_64-unknown-linux-gnu.zip
+RUN wget https://github.com/jqnatividad/qsv/releases/download/0.87.1/qsv-0.87.1-x86_64-unknown-linux-musl.zip -P /tmp
+RUN unzip /tmp/qsv-0.87.1-x86_64-unknown-linux-musl.zip -d /tmp
+RUN rm /tmp/qsv-0.87.1-x86_64-unknown-linux-musl.zip
 RUN mv /tmp/qsv* /usr/local/bin
 
 # if qsv is already installed, be sure to update it to the latest release
-# RUN qsvdp --update
+RUN qsvdp --update
 
 # Install pip
 RUN curl -o /tmp/get-pip.py https://bootstrap.pypa.io/get-pip.py && \
@@ -91,7 +91,7 @@ RUN curl -o /tmp/get-pip.py https://bootstrap.pypa.io/get-pip.py && \
 COPY --from=build /wheels /srv/app/wheels
 
 # Install uwsgi and gevent
-RUN pip install --no-index --find-links=/srv/app/wheels uwsgi==2.0.19.1 gevent==21.12.0
+RUN pip install --no-index --find-links=/srv/app/wheels uwsgi==2.0.21 gevent==22.10.2
 
 # Create a local user and group to run the app
 RUN addgroup -g 92 -S ckan && \
