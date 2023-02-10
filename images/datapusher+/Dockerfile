@@ -104,6 +104,8 @@ RUN pip install --no-index --find-links=/srv/app/wheels datapusher-plus && \
     echo "UTC" >  /etc/timezone && \
     # Change ownership to app user
     chown -R ckan:ckan /srv/app
+RUN pip install messytables \
+                datapusher
 
 # Remove wheels
 RUN rm -rf /srv/app/wheels
