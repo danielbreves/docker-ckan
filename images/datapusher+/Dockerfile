@@ -114,6 +114,9 @@ COPY setup ${APP_DIR}
 
 EXPOSE 8000
 
-USER root
+USER ckan
 
-CMD ["uwsgi", "--socket=/tmp/uwsgi.sock", "--uid=92", "--gid=92", "--http=:8000", "--master", "--enable-threads", "--gevent=2000", "-p 2", "-L", "--wsgi-file=wsgi.py"]
+ENV UWSGI_NUM_OF_WORKERS="2"
+ENV UWSGI_BUFFER_SIZE="4096"
+
+CMD ["uwsgi", "--socket=/tmp/uwsgi.sock", "--uid=92", "--gid=92", "--http=:8000", "--master", "--enable-threads", "--gevent=2000", "-p ${UWSGI_NUM_OF_WORKERS}","-b ${UWSGI_BUFFER_SIZE}" , "-L", "--wsgi-file=wsgi.py"]
