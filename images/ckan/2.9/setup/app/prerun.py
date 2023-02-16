@@ -68,20 +68,20 @@ def check_solr_connection(retry=None):
         sys.exit(1)
 
     url = os.environ.get('CKAN_SOLR_URL', '')
-    username = os.environ.get('SOLR_ADMIN_USERNAME', '')
-    password = os.environ.get('SOLR_ADMIN_PASSWORD', '')
+    username = os.environ.get('SOLR_ADMIN_USERNAME', 'admin')
+    password = os.environ.get('SOLR_ADMIN_PASSWORD', 'pass')
     search_url = '{url}/schema/name?wt=json'.format(url=url)
 
-
- 
     try:
         if not username:
             connection = urllib.request.urlopen(search_url)
         else:
-            request = urllib.request.Request(search_url)
-            base64string = base64.b64encode(bytes('%s:%s' % (username, password),'ascii'))
-            request.add_header("Authorization", "Basic %s" % base64string.decode('utf-8'))
-            connection = urllib.request.urlopen(request)
+            passman = urllib.request.HTTPPasswordMgrWithDefaultRealm()
+            passman.add_password(None, search_url, username, password)
+            authhandler = urllib.request.HTTPBasicAuthHandler(passman)
+            opener = urllib.request.build_opener(authhandler)
+            urllib.request.install_opener(opener)
+            connection = urllib.request.urlopen(search_url)
     except urllib.error.URLError as e:
         print('[prerun] Unable to connect to solr...try again in a while.')
         import time
