@@ -4,11 +4,11 @@
 FROM alpine:3.13.7 as build
 
 # Used by Github Actions to tag the image with
-ENV IMAGE_TAG=0.10.1
+ENV IMAGE_TAG=0.10.2
 
 # Set datapusher version to build
-ENV GIT_URL https://github.com/dathere/datapusher-plus
-ENV GIT_BRANCH 0.10.1
+ENV GIT_URL https://github.com/keitaroinc/datapusher-plus
+ENV GIT_BRANCH master
 
 # Set src dirs
 ENV SRC_DIR=/srv/app/src
@@ -33,12 +33,11 @@ RUN apk add --no-cache \
         openssl-dev \
         libxml2-dev \
         libxslt-dev \
-        rust \
-        cargo \
         build-base \
-        libxslt-dev \
+        postgresql-dev \
         zlib-dev \ 
-        libpq
+        libpq \
+        postgresql-libs
 
 
 # Create the src directory
@@ -72,7 +71,12 @@ RUN apk add --no-cache \
         python3 \
         curl \
         libmagic \
-        libxslt
+        libxslt \
+        file \
+        postgresql-libs \
+        postgresql-dev \
+        pcre \
+        pcre-dev
 
 # install qsv
 RUN wget https://github.com/jqnatividad/qsv/releases/download/0.87.1/qsv-0.87.1-x86_64-unknown-linux-musl.zip -P /tmp
@@ -102,21 +106,24 @@ RUN pip install --no-index --find-links=/srv/app/wheels datapusher-plus && \
     # pip install --no-index --find-links=/srv/app/wheels -r /srv/app/wheels/requirements.txt && \
     # Set timezone
     echo "UTC" >  /etc/timezone && \
+    pip install config && \
     # Change ownership to app user
     chown -R ckan:ckan /srv/app
-RUN pip install messytables \
-                datapusher
 
 # Remove wheels
 RUN rm -rf /srv/app/wheels
+
+RUN ln -sf /proc/1/fd/1 /tmp/ckan_service.log
 
 COPY setup ${APP_DIR}
 
 EXPOSE 8000
 
-USER ckan
+USER root
 
 ENV UWSGI_NUM_OF_WORKERS="2"
 ENV UWSGI_BUFFER_SIZE="4096"
 
+# CMD [ "sleep", "infinity" ]
 CMD ["uwsgi", "--socket=/tmp/uwsgi.sock", "--uid=92", "--gid=92", "--http=:8000", "--master", "--enable-threads", "--gevent=2000", "-p ${UWSGI_NUM_OF_WORKERS}","-b ${UWSGI_BUFFER_SIZE}" , "-L", "--wsgi-file=wsgi.py"]
+# uwsgi --socket=/tmp/uwsgi.sock --uid=92 --gid=92 --http=:8000 --master --enable-threads --gevent=2000 -p ${UWSGI_NUM_OF_WORKERS} -b ${UWSGI_BUFFER_SIZE} -L --wsgi-file=wsgi.py
