@@ -52,7 +52,7 @@ then
       # Generate htpasswd file for basicauth
       htpasswd -d -b -c /srv/app/.htpasswd $HTPASSWD_USER $HTPASSWD_PASSWORD
       # Start uwsgi with basicauth
-      uwsgi --ini /srv/app/uwsgi.conf --pcre-jit $UWSGI_OPTS
+      uwsgi --ini /srv/app/basic-auth-uwsgi.conf --pcre-jit $UWSGI_OPTS
     else
       echo "Missing HTPASSWD_USER or HTPASSWD_PASSWORD environment variables. Exiting..."
       exit 1
