@@ -21,7 +21,7 @@ then
 fi
 
 echo "Starting UWSGI with '${UWSGI_PROC_NO:-2}' workers"
-uwsgi --ini uwsgi.conf
+uwsgi --ini uwsgi.conf -p ${UWSGI_PROC_NO:-2}
 
 # Run the prerun script to init CKAN and create the default admin user
 python prerun.py || { echo '[CKAN prerun] FAILED. Exiting...' ; exit 1; }
