@@ -179,6 +179,7 @@ RUN rm -rf /srv/app/wheels /srv/app/ext_wheels
 
 # Copy necessary scripts
 COPY setup/app ${APP_DIR}
+COPY scripts/ckan_cleanup ${APP_DIR}
 
 WORKDIR ${APP_DIR}
 
