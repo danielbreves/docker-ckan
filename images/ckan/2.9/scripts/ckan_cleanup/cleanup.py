@@ -18,6 +18,7 @@ username = args.user
 password = args.password
 database = args.database
 ip = args.hostname
+output_file = args.output
 
 db_url = f'postgresql+psycopg2://{username}:{password}@{ip}:5432/{database}'
 
@@ -33,7 +34,7 @@ for resource in query:
     if resource[6] != 'active':
         inactive_resources.append(f'{resource[20]}:{resource[0]}')
 
-with open("inactive_resources.txt","w") as f:
+with open(output_file,"w") as f:
     print("Dumping to file")
     tabs = '\t'*9
     f.writelines(f"dataset{tabs}resource\n")
