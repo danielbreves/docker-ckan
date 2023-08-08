@@ -51,6 +51,9 @@ RUN curl -o ${SRC_DIR}/get-pip.py https://bootstrap.pypa.io/get-pip.py && \
 # Downgrade setuptools so that CKAN requirements can be built
 RUN pip install setuptools==44.1.0
 
+RUN pip wheel --wheel-dir=/wheels cython==0.29.36
+RUN pip wheel --no-deps --wheel-dir=/wheels pyyaml==5.4.1
+
 # Fetch and build CKAN and requirements
 RUN pip install -e git+${GIT_URL}@${GIT_BRANCH}#egg=ckan
 # Copy patches and apply patches script
@@ -61,11 +64,13 @@ RUN cd ${SRC_DIR} && ls -lah ${SRC_DIR} && ash ${SRC_DIR}/apply_ckan_patches.sh
 RUN rm -rf /srv/app/src/ckan/.git
 
 #### PATCH SINCE CYTON UPDATED TO 3.0.0 ###
-RUN sed -i 's/pyyaml==5.4.1/pyyaml>=6.0.1/g' ckan/requirements.txt
+RUN sed -i 's/pyyaml==5.4.1/#pyyaml==5.4.1/g' ckan/requirements.txt
 
 # RUN pip-compile ckan/requirements.in 
 RUN pip wheel --wheel-dir=/wheels -r ckan/requirements.txt
 RUN pip wheel --wheel-dir=/wheels uWSGI==2.0.20 gevent==21.12.0 greenlet==1.1.3
+
+
 
 ###########################
 ### Default-Extensions ####
